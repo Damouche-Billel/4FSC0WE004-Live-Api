@@ -737,7 +737,7 @@
 
     <script>
         // Base URL for all API calls to the backend server
-        const API_BASE = 'http://localhost:8000/api';
+        const API_BASE = window.location.origin + '/api';
         let currentEditPlayerId = null;
 
         // Function to switch between different sections (Players, Teams, Tournaments)
