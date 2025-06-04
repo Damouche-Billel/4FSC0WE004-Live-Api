@@ -373,3 +373,37 @@ app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
   console.log('Fennec FC Management System is ready!');
 });
+
+// Universal function to make API calls to the backend
+async function apiCall(url, options = {}) {
+    try {
+        const response = await fetch(url, {
+            headers: {
+                'Content-Type': 'application/json',
+                ...options.headers
+            },
+            ...options
+        });
+        
+        // Check if the API call was successful
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.error || 'API call failed');
+        }
+        
+        return await response.json();
+    } catch (error) {
+        console.error('API Error:', error);
+        throw error;
+    }
+}
+
+// Fetch all players from the backend and display them
+async function loadPlayers() {
+    try {
+        const players = await apiCall(`${API_BASE}/players`);
+        displayPlayers(players);
+    } catch (error) {
+        document.getElementById('playersList').innerHTML = `<div class="error">Error loading players: ${error.message}</div>`;
+    }
+}
