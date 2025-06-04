@@ -1,0 +1,1256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fennec FC - Team Management System</title>
+    <style>
+        /* Reset all default browser styles for consistent appearance */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Main page styling with light background and readable fonts */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f8fafc;
+            min-height: 100vh;
+            color: #334155;
+            line-height: 1.6;
+        }
+
+        /* Main container to center content and add padding */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header section with club name and description */
+        .header {
+            text-align: center;
+            margin-bottom: 32px;
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e2e8f0;
+        }
+
+        /* Club name styling */
+        .header h1 {
+            color: #1e293b;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        /* Subtitle text under club name */
+        .header p {
+            color: #64748b;
+            font-size: 1.1rem;
+            font-weight: 400;
+        }
+
+        /* Navigation tabs container - displays Players, Teams, Tournaments */
+        .tabs {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 32px;
+            justify-content: center;
+        }
+
+        /* Individual tab button styling */
+        .tab {
+            padding: 12px 24px;
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            color: #64748b;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            min-width: 120px;
+        }
+
+        /* Tab hover effects for better user interaction */
+        .tab:hover {
+            background: #f1f5f9;
+            color: #475569;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Active tab styling to show current section */
+        .tab.active {
+            background: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+        }
+
+        /* Active tab hover effect */
+        .tab.active:hover {
+            background: #2563eb;
+            border-color: #2563eb;
+        }
+
+        /* Main content area where forms and data are displayed */
+        .content {
+            background: white;
+            border-radius: 12px;
+            padding: 32px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Hide sections by default - only active section is shown */
+        .section {
+            display: none;
+        }
+
+        /* Show the currently active section */
+        .section.active {
+            display: block;
+        }
+
+        /* Section headings (Player Management, Team Management, etc.) */
+        .section h2 {
+            color: #1e293b;
+            font-size: 1.875rem;
+            margin-bottom: 24px;
+            font-weight: 600;
+        }
+
+        /* Individual form field container */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        /* Horizontal layout for multiple form fields in one row */
+        .form-row {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        /* Equal width for form fields in a row */
+        .form-row .form-group {
+            flex: 1;
+            margin-bottom: 0;
+        }
+
+        /* Form field labels */
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+            color: #374151;
+            font-size: 14px;
+        }
+
+        /* All input fields, dropdowns, and text areas */
+        input, select, textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+            background: white;
+            color: #374151;
+        }
+
+        /* Focus state for form fields - highlights when user clicks in */
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        /* Primary button styling (Add Player, Create Team, etc.) */
+        button {
+            background: #3b82f6;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: background 0.2s ease;
+            margin-right: 12px;
+            margin-bottom: 12px;
+        }
+
+        /* Primary button hover effect */
+        button:hover {
+            background: #2563eb;
+        }
+
+        /* Red buttons for delete actions */
+        .btn-danger {
+            background: #ef4444;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        /* Gray buttons for secondary actions (Clear Form, Cancel) */
+        .btn-secondary {
+            background: #6b7280;
+        }
+
+        .btn-secondary:hover {
+            background: #4b5563;
+        }
+
+        /* Grid layout for displaying player/team/tournament cards */
+        .items-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 24px;
+        }
+
+        /* Individual card styling for players, teams, tournaments */
+        .item-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            border: 1px solid #e2e8f0;
+            transition: all 0.2s ease;
+        }
+
+        /* Card hover effect for better interactivity */
+        .item-card:hover {
+            border-color: #3b82f6;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Card title styling (player name, team name, etc.) */
+        .item-card h3 {
+            color: #1e293b;
+            margin-bottom: 12px;
+            font-size: 1.125rem;
+            font-weight: 600;
+        }
+
+        /* Card content text */
+        .item-card p {
+            color: #64748b;
+            margin-bottom: 6px;
+            font-size: 14px;
+        }
+
+        /* Bold text within cards */
+        .item-card strong {
+            color: #374151;
+        }
+
+        /* Container for Edit/Delete buttons on each card */
+        .item-actions {
+            margin-top: 16px;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        /* Smaller buttons for card actions */
+        .item-actions button {
+            padding: 8px 16px;
+            font-size: 13px;
+            margin: 0;
+        }
+
+        /* Loading message styling */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #64748b;
+            font-size: 16px;
+        }
+
+        /* Error message styling (red background) */
+        .error {
+            background: #fef2f2;
+            color: #dc2626;
+            padding: 16px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            border: 1px solid #fecaca;
+            font-weight: 500;
+        }
+
+        /* Success message styling (green background) */
+        .success {
+            background: #f0fdf4;
+            color: #16a34a;
+            padding: 16px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            border: 1px solid #bbf7d0;
+            font-weight: 500;
+        }
+
+        /* Modal overlay that covers the entire screen */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+
+        /* Modal content box positioned in center of screen */
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 32px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Modal title styling */
+        .modal h3 {
+            margin-bottom: 24px;
+            color: #1e293b;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        /* Close button (X) in top-right corner of modal */
+        .close {
+            position: absolute;
+            top: 16px;
+            right: 20px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #64748b;
+            transition: color 0.2s ease;
+        }
+
+        .close:hover {
+            color: #374151;
+        }
+
+        /* Container for player lists within teams and tournaments */
+        .team-players, .tournament-teams {
+            margin-top: 12px;
+        }
+
+        /* Small badges showing player names and numbers */
+        .player-badge, .team-badge {
+            display: inline-block;
+            background: #f1f5f9;
+            color: #475569;
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 12px;
+            margin: 2px 4px 2px 0;
+            font-weight: 500;
+            border: 1px solid #e2e8f0;
+        }
+
+        /* Status indicator badges for tournaments */
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        /* Yellow badge for upcoming tournaments */
+        .status-upcoming {
+            background: #fef3c7;
+            color: #92400e;
+            border: 1px solid #fde68a;
+        }
+
+        /* Green badge for ongoing tournaments */
+        .status-ongoing {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+
+        /* Gray badge for completed tournaments */
+        .status-completed {
+            background: #f3f4f6;
+            color: #374151;
+            border: 1px solid #d1d5db;
+        }
+
+        /* Small help text under form fields */
+        small {
+            color: #6b7280;
+            font-style: italic;
+        }
+
+        /* Multiple selection dropdowns styling */
+        select[multiple] {
+            min-height: 120px;
+        }
+
+        /* Highlight selected options in dropdowns */
+        select option:checked {
+            background: #3b82f6;
+            color: white;
+        }
+
+        /* Responsive design for tablets and small laptops */
+        @media (max-width: 768px) {
+            .container {
+                padding: 16px;
+            }
+
+            .header {
+                padding: 24px;
+                margin-bottom: 24px;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            /* Stack form fields vertically on smaller screens */
+            .form-row {
+                flex-direction: column;
+            }
+            
+            /* Stack navigation tabs vertically on mobile */
+            .tabs {
+                flex-direction: column;
+                align-items: center;
+                gap: 8px;
+            }
+            
+            .tab {
+                width: 100%;
+                max-width: 300px;
+            }
+            
+            /* Single column for cards on mobile */
+            .items-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .modal-content {
+                padding: 24px;
+                width: 95%;
+            }
+        }
+
+        /* Responsive design for mobile phones */
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 1.75rem;
+            }
+
+            .section h2 {
+                font-size: 1.5rem;
+            }
+
+            /* Stack action buttons vertically on very small screens */
+            .item-actions {
+                flex-direction: column;
+            }
+
+            .item-actions button {
+                width: 100%;
+                margin-bottom: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Main header with club name and description -->
+        <div class="header">
+            <h1>Fennec FC</h1>
+            <p>Team Management System</p>
+        </div>
+
+        <!-- Navigation tabs to switch between different sections -->
+        <div class="tabs">
+            <button class="tab active" onclick="showSection('players')">
+                Players
+            </button>
+            <button class="tab" onclick="showSection('teams')">
+                Teams
+            </button>
+            <button class="tab" onclick="showSection('tournaments')">
+                Tournaments
+            </button>
+        </div>
+
+        <!-- Main content area -->
+        <div class="content">
+            <!-- Player Management Section -->
+            <div id="players" class="section active">
+                <h2>Player Management</h2>
+                <!-- Area where success/error messages will appear -->
+                <div id="playerMessage"></div>
+                
+                <!-- Form to add new players -->
+                <form id="playerForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="playerName">Player Name</label>
+                            <input type="text" id="playerName" required placeholder="Enter player's full name">
+                        </div>
+                        <div class="form-group">
+                            <label for="playerPosition">Position</label>
+                            <select id="playerPosition" required>
+                                <option value="">Select Position</option>
+                                <option value="Goalkeeper">Goalkeeper</option>
+                                <option value="Defender">Defender</option>
+                                <option value="Midfielder">Midfielder</option>
+                                <option value="Forward">Forward</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="playerAge">Age</label>
+                            <input type="number" id="playerAge" min="16" max="45" required placeholder="Player's age">
+                        </div>
+                        <div class="form-group">
+                            <label for="playerNationality">Nationality</label>
+                            <input type="text" id="playerNationality" required placeholder="Player's nationality">
+                        </div>
+                        <div class="form-group">
+                            <label for="playerJersey">Jersey Number</label>
+                            <input type="number" id="playerJersey" min="1" max="99" required placeholder="1-99">
+                        </div>
+                    </div>
+                    <button type="submit">Add Player</button>
+                    <button type="button" class="btn-secondary" onclick="resetPlayerForm()">Clear Form</button>
+                </form>
+
+                <!-- Grid where all players will be displayed as cards -->
+                <div id="playersList" class="items-grid">
+                    <div class="loading">Loading players...</div>
+                </div>
+            </div>
+
+            <!-- Team Management Section -->
+            <div id="teams" class="section">
+                <h2>Team Management</h2>
+                <!-- Area where success/error messages will appear -->
+                <div id="teamMessage"></div>
+                
+                <!-- Form to create new teams -->
+                <form id="teamForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="teamName">Team Name</label>
+                            <input type="text" id="teamName" required placeholder="Enter team name">
+                        </div>
+                        <div class="form-group">
+                            <label for="teamFormation">Formation</label>
+                            <select id="teamFormation" required>
+                                <option value="">Select Formation</option>
+                                <option value="4-4-2">4-4-2 (Classic)</option>
+                                <option value="4-3-3">4-3-3 (Attacking)</option>
+                                <option value="3-5-2">3-5-2 (Wing Play)</option>
+                                <option value="4-2-3-1">4-2-3-1 (Modern)</option>
+                                <option value="5-3-2">5-3-2 (Defensive)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="teamPlayers">Select Players</label>
+                        <!-- Multi-select dropdown - populated by JavaScript with available players -->
+                        <select id="teamPlayers" multiple>
+                            <!-- Will be populated by JavaScript -->
+                        </select>
+                        <small>Hold Ctrl/Cmd to select multiple players</small>
+                    </div>
+                    <button type="submit">Create Team</button>
+                    <button type="button" class="btn-secondary" onclick="resetTeamForm()">Clear Form</button>
+                </form>
+
+                <!-- Grid where all teams will be displayed as cards -->
+                <div id="teamsList" class="items-grid">
+                    <div class="loading">Loading teams...</div>
+                </div>
+            </div>
+
+            <!-- Tournament Management Section -->
+            <div id="tournaments" class="section">
+                <h2>Tournament Management</h2>
+                <!-- Area where success/error messages will appear -->
+                <div id="tournamentMessage"></div>
+                
+                <!-- Form to create new tournaments -->
+                <form id="tournamentForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="tournamentName">Tournament Name</label>
+                            <input type="text" id="tournamentName" required placeholder="Enter tournament name">
+                        </div>
+                        <div class="form-group">
+                            <label for="tournamentLocation">Location</label>
+                            <input type="text" id="tournamentLocation" required placeholder="Tournament location">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="tournamentStartDate">Start Date</label>
+                            <input type="date" id="tournamentStartDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="tournamentEndDate">End Date</label>
+                            <input type="date" id="tournamentEndDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="tournamentMaxTeams">Max Teams</label>
+                            <input type="number" id="tournamentMaxTeams" min="2" max="32" value="16" placeholder="Maximum teams">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="tournamentTeams">Select Teams</label>
+                        <!-- Multi-select dropdown - populated by JavaScript with available teams -->
+                        <select id="tournamentTeams" multiple>
+                            <!-- Will be populated by JavaScript -->
+                        </select>
+                        <small>Hold Ctrl/Cmd to select multiple teams</small>
+                    </div>
+                    <button type="submit">Create Tournament</button>
+                    <button type="button" class="btn-secondary" onclick="resetTournamentForm()">Clear Form</button>
+                </form>
+
+                <!-- Grid where all tournaments will be displayed as cards -->
+                <div id="tournamentsList" class="items-grid">
+                    <div class="loading">Loading tournaments...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal popup for editing team details -->
+    <div id="editTeamModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeEditTeamModal()">&times;</span>
+            <h3>Edit Team Details</h3>
+            <form id="editTeamForm">
+                <!-- Hidden field to store team ID being edited -->
+                <input type="hidden" id="editTeamId">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="editTeamName">Team Name</label>
+                        <input type="text" id="editTeamName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editTeamFormation">Formation</label>
+                        <select id="editTeamFormation" required>
+                            <option value="4-4-2">4-4-2 (Classic)</option>
+                            <option value="4-3-3">4-3-3 (Attacking)</option>
+                            <option value="3-5-2">3-5-2 (Wing Play)</option>
+                            <option value="4-2-3-1">4-2-3-1 (Modern)</option>
+                            <option value="5-3-2">5-3-2 (Defensive)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="editTeamPlayers">Select Players</label>
+                    <!-- Multi-select dropdown - populated when editing a specific team -->
+                    <select id="editTeamPlayers" multiple>
+                        <!-- Will be populated by JavaScript -->
+                    </select>
+                    <small>Hold Ctrl/Cmd to select multiple players</small>
+                </div>
+                <button type="submit">Update Team</button>
+                <button type="button" class="btn-secondary" onclick="closeEditTeamModal()">Cancel</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal popup for editing player details -->
+    <div id="editPlayerModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeEditPlayerModal()">&times;</span>
+            <h3>Edit Player Details</h3>
+            <form id="editPlayerForm">
+                <!-- Hidden field to store player ID being edited -->
+                <input type="hidden" id="editPlayerId">
+                <div class="form-group">
+                    <label for="editPlayerName">Player Name</label>
+                    <input type="text" id="editPlayerName" required>
+                </div>
+                <div class="form-group">
+                    <label for="editPlayerPosition">Position</label>
+                    <select id="editPlayerPosition" required>
+                        <option value="Goalkeeper">Goalkeeper</option>
+                        <option value="Defender">Defender</option>
+                        <option value="Midfielder">Midfielder</option>
+                        <option value="Forward">Forward</option>
+                    </select>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="editPlayerAge">Age</label>
+                        <input type="number" id="editPlayerAge" min="16" max="45" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editPlayerJersey">Jersey Number</label>
+                        <input type="number" id="editPlayerJersey" min="1" max="99" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="editPlayerNationality">Nationality</label>
+                        <input type="text" id="editPlayerNationality" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editPlayerAvailable">Availability</label>
+                        <select id="editPlayerAvailable">
+                            <option value="true">Available</option>
+                            <option value="false">Unavailable</option>
+                        </select>
+                    </div>
+                </div>
+                <button type="submit">Update Player</button>
+                <button type="button" class="btn-secondary" onclick="closeEditPlayerModal()">Cancel</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Base URL for all API calls to the backend server
+        const API_BASE = 'http://localhost:8000/api';
+        let currentEditPlayerId = null;
+
+        // Function to switch between different sections (Players, Teams, Tournaments)
+        function showSection(sectionName) {
+            // Hide all sections first
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Remove active styling from all tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show the selected section
+            document.getElementById(sectionName).classList.add('active');
+            
+            // Add active styling to the clicked tab
+            event.target.closest('.tab').classList.add('active');
+            
+            // Load appropriate data when switching sections
+            if (sectionName === 'players') {
+                loadPlayers();
+            } else if (sectionName === 'teams') {
+                loadTeams();
+                loadPlayersForTeamForm();
+            } else if (sectionName === 'tournaments') {
+                loadTournaments();
+                loadTeamsForTournamentForm();
+            }
+        }
+
+        // Function to display success or error messages to the user
+        function showMessage(elementId, message, type = 'success') {
+            const messageDiv = document.getElementById(elementId);
+            messageDiv.className = type;
+            messageDiv.textContent = message;
+            messageDiv.style.display = 'block';
+            // Auto-hide the message after 5 seconds
+            setTimeout(() => {
+                messageDiv.style.display = 'none';
+            }, 5000);
+        }
+
+        // Universal function to make API calls to the backend
+        async function apiCall(url, options = {}) {
+            try {
+                const response = await fetch(url, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...options.headers
+                    },
+                    ...options
+                });
+                
+                // Check if the API call was successful
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error || 'API call failed');
+                }
+                
+                return await response.json();
+            } catch (error) {
+                console.error('API Error:', error);
+                throw error;
+            }
+        }
+
+        // ======= PLAYER MANAGEMENT FUNCTIONS =======
+
+        // Fetch all players from the backend and display them
+        async function loadPlayers() {
+            try {
+                const players = await apiCall(`${API_BASE}/players`);
+                displayPlayers(players);
+            } catch (error) {
+                document.getElementById('playersList').innerHTML = `<div class="error">Error loading players: ${error.message}</div>`;
+            }
+        }
+
+        // Create HTML cards for each player and display them in a grid
+        function displayPlayers(players) {
+            const container = document.getElementById('playersList');
+            
+            if (players.length === 0) {
+                container.innerHTML = '<div class="loading">No players found. Add your first player!</div>';
+                return;
+            }
+            
+            // Generate HTML for each player card
+            container.innerHTML = players.map(player => `
+                <div class="item-card">
+                    <h3>${player.name} #${player.jerseyNumber}</h3>
+                    <p><strong>Position:</strong> ${player.position}</p>
+                    <p><strong>Age:</strong> ${player.age} years old</p>
+                    <p><strong>Nationality:</strong> ${player.nationality}</p>
+                    <p><strong>Status:</strong> ${player.isAvailable ? '✅ Available' : '❌ Unavailable'}</p>
+                    <div class="item-actions">
+                        <button onclick="editPlayer('${player._id}')">Edit Player</button>
+                        <button class="btn-danger" onclick="deletePlayer('${player._id}', '${player.name}')">Delete</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Load all players into the team creation form dropdown
+        async function loadPlayersForTeamForm() {
+            try {
+                const players = await apiCall(`${API_BASE}/players`);
+                const select = document.getElementById('teamPlayers');
+                select.innerHTML = players.map(player => 
+                    `<option value="${player._id}">${player.name} (#${player.jerseyNumber}) - ${player.position}</option>`
+                ).join('');
+            } catch (error) {
+                console.error('Error loading players for team form:', error);
+            }
+        }
+
+        // Handle form submission when adding a new player
+        document.getElementById('playerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // Collect form data
+            const playerData = {
+                name: document.getElementById('playerName').value,
+                position: document.getElementById('playerPosition').value,
+                age: parseInt(document.getElementById('playerAge').value),
+                nationality: document.getElementById('playerNationality').value,
+                jerseyNumber: parseInt(document.getElementById('playerJersey').value)
+            };
+            
+            try {
+                // Send player data to backend
+                await apiCall(`${API_BASE}/players`, {
+                    method: 'POST',
+                    body: JSON.stringify(playerData)
+                });
+                
+                showMessage('playerMessage', 'Player added successfully!');
+                resetPlayerForm();
+                loadPlayers(); // Refresh the player list
+                loadPlayersForTeamForm(); // Update team form dropdowns
+            } catch (error) {
+                showMessage('playerMessage', `Error: ${error.message}`, 'error');
+            }
+        });
+
+        // Clear the player form fields
+        function resetPlayerForm() {
+            document.getElementById('playerForm').reset();
+        }
+
+        // Open the edit modal and populate it with existing player data
+        async function editPlayer(playerId) {
+            try {
+                const player = await apiCall(`${API_BASE}/players/${playerId}`);
+                
+                // Populate the edit form with current player data
+                document.getElementById('editPlayerId').value = player._id;
+                document.getElementById('editPlayerName').value = player.name;
+                document.getElementById('editPlayerPosition').value = player.position;
+                document.getElementById('editPlayerAge').value = player.age;
+                document.getElementById('editPlayerNationality').value = player.nationality;
+                document.getElementById('editPlayerJersey').value = player.jerseyNumber;
+                document.getElementById('editPlayerAvailable').value = player.isAvailable.toString();
+                
+                // Show the modal
+                document.getElementById('editPlayerModal').style.display = 'block';
+            } catch (error) {
+                showMessage('playerMessage', `Error loading player: ${error.message}`, 'error');
+            }
+        }
+
+        // Handle form submission when editing a player
+        document.getElementById('editPlayerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const playerId = document.getElementById('editPlayerId').value;
+            // Collect updated form data
+            const playerData = {
+                name: document.getElementById('editPlayerName').value,
+                position: document.getElementById('editPlayerPosition').value,
+                age: parseInt(document.getElementById('editPlayerAge').value),
+                nationality: document.getElementById('editPlayerNationality').value,
+                jerseyNumber: parseInt(document.getElementById('editPlayerJersey').value),
+                isAvailable: document.getElementById('editPlayerAvailable').value === 'true'
+            };
+            
+            try {
+                // Send updated data to backend
+                await apiCall(`${API_BASE}/players/${playerId}`, {
+                    method: 'PUT',
+                    body: JSON.stringify(playerData)
+                });
+                
+                showMessage('playerMessage', 'Player updated successfully!');
+                closeEditPlayerModal();
+                loadPlayers(); // Refresh the player list
+                loadPlayersForTeamForm(); // Update team form dropdowns
+            } catch (error) {
+                showMessage('playerMessage', `Error: ${error.message}`, 'error');
+            }
+        });
+
+        // Close the player edit modal
+        function closeEditPlayerModal() {
+            document.getElementById('editPlayerModal').style.display = 'none';
+        }
+
+        // Delete a player after user confirmation
+        async function deletePlayer(playerId, playerName) {
+            if (!confirm(`Are you sure you want to delete ${playerName}?`)) {
+                return;
+            }
+            
+            try {
+                await apiCall(`${API_BASE}/players/${playerId}`, {
+                    method: 'DELETE'
+                });
+                
+                showMessage('playerMessage', 'Player deleted successfully!');
+                loadPlayers(); // Refresh the player list
+                loadPlayersForTeamForm(); // Update team form dropdowns
+            } catch (error) {
+                showMessage('playerMessage', `Error: ${error.message}`, 'error');
+            }
+        }
+
+        // ======= TEAM MANAGEMENT FUNCTIONS =======
+
+        // Fetch all teams from the backend and display them
+        async function loadTeams() {
+            try {
+                const teams = await apiCall(`${API_BASE}/teams`);
+                displayTeams(teams);
+            } catch (error) {
+                document.getElementById('teamsList').innerHTML = `<div class="error">Error loading teams: ${error.message}</div>`;
+            }
+        }
+
+        // Create HTML cards for each team and display them in a grid
+        function displayTeams(teams) {
+            const container = document.getElementById('teamsList');
+            
+            if (teams.length === 0) {
+                container.innerHTML = '<div class="loading">No teams found. Create your first team!</div>';
+                return;
+            }
+            
+            // Generate HTML for each team card with player badges
+            container.innerHTML = teams.map(team => `
+                <div class="item-card">
+                    <h3>${team.name}</h3>
+                    <p><strong>Formation:</strong> ${team.formation}</p>
+                    <p><strong>Players:</strong> ${team.players.length} registered</p>
+                    <div class="team-players">
+                        ${team.players.map(player => 
+                            `<span class="player-badge">${player.name} #${player.jerseyNumber}</span>`
+                        ).join('')}
+                    </div>
+                    <div class="item-actions">
+                        <button onclick="editTeam('${team._id}')">Edit Team</button>
+                        <button class="btn-danger" onclick="deleteTeam('${team._id}', '${team.name}')">Delete Team</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Load all teams into the tournament creation form dropdown
+        async function loadTeamsForTournamentForm() {
+            try {
+                const teams = await apiCall(`${API_BASE}/teams`);
+                const select = document.getElementById('tournamentTeams');
+                select.innerHTML = teams.map(team => 
+                    `<option value="${team._id}">${team.name} (${team.formation}) - ${team.players.length} players</option>`
+                ).join('');
+            } catch (error) {
+                console.error('Error loading teams for tournament form:', error);
+            }
+        }
+
+        // Handle form submission when creating a new team
+        document.getElementById('teamForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // Get selected players from the multi-select dropdown
+            const selectedPlayers = Array.from(document.getElementById('teamPlayers').selectedOptions)
+                .map(option => option.value);
+            
+            // Collect form data
+            const teamData = {
+                name: document.getElementById('teamName').value,
+                formation: document.getElementById('teamFormation').value,
+                players: selectedPlayers
+            };
+            
+            try {
+                // Send team data to backend
+                await apiCall(`${API_BASE}/teams`, {
+                    method: 'POST',
+                    body: JSON.stringify(teamData)
+                });
+                
+                showMessage('teamMessage', 'Team created successfully!');
+                resetTeamForm();
+                loadTeams(); // Refresh the team list
+                loadTeamsForTournamentForm(); // Update tournament form dropdowns
+            } catch (error) {
+                showMessage('teamMessage', `Error: ${error.message}`, 'error');
+            }
+        });
+
+        // Clear the team form fields
+        function resetTeamForm() {
+            document.getElementById('teamForm').reset();
+        }
+
+        // Open the edit modal and populate it with existing team data
+        async function editTeam(teamId) {
+            try {
+                const team = await apiCall(`${API_BASE}/teams/${teamId}`);
+                const players = await apiCall(`${API_BASE}/players`);
+                
+                // Populate form fields with current team data
+                document.getElementById('editTeamId').value = team._id;
+                document.getElementById('editTeamName').value = team.name;
+                document.getElementById('editTeamFormation').value = team.formation;
+                
+                // Populate players dropdown and pre-select current team players
+                const select = document.getElementById('editTeamPlayers');
+                select.innerHTML = players.map(player => 
+                    `<option value="${player._id}" ${team.players.some(p => p._id === player._id) ? 'selected' : ''}>
+                        ${player.name} (#${player.jerseyNumber}) - ${player.position}
+                    </option>`
+                ).join('');
+                
+                // Show the modal
+                document.getElementById('editTeamModal').style.display = 'block';
+            } catch (error) {
+                showMessage('teamMessage', `Error loading team: ${error.message}`, 'error');
+            }
+        }
+
+        // Handle form submission when editing a team
+        document.getElementById('editTeamForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const teamId = document.getElementById('editTeamId').value;
+            // Get selected players from the multi-select dropdown
+            const selectedPlayers = Array.from(document.getElementById('editTeamPlayers').selectedOptions)
+                .map(option => option.value);
+            
+            // Collect updated form data
+            const teamData = {
+                name: document.getElementById('editTeamName').value,
+                formation: document.getElementById('editTeamFormation').value,
+                players: selectedPlayers
+            };
+            
+            try {
+                // Send updated data to backend
+                await apiCall(`${API_BASE}/teams/${teamId}`, {
+                    method: 'PUT',
+                    body: JSON.stringify(teamData)
+                });
+                
+                showMessage('teamMessage', 'Team updated successfully!');
+                closeEditTeamModal();
+                loadTeams(); // Refresh the team list
+                loadTeamsForTournamentForm(); // Update tournament form dropdowns
+            } catch (error) {
+                showMessage('teamMessage', `Error: ${error.message}`, 'error');
+            }
+        });
+
+        // Close the team edit modal
+        function closeEditTeamModal() {
+            document.getElementById('editTeamModal').style.display = 'none';
+        }
+
+        // Delete a team after user confirmation
+        async function deleteTeam(teamId, teamName) {
+            if (!confirm(`Are you sure you want to delete ${teamName}?`)) {
+                return;
+            }
+            
+            try {
+                await apiCall(`${API_BASE}/teams/${teamId}`, {
+                    method: 'DELETE'
+                });
+                
+                showMessage('teamMessage', 'Team deleted successfully!');
+                loadTeams(); // Refresh the team list
+                loadTeamsForTournamentForm(); // Update tournament form dropdowns
+            } catch (error) {
+                showMessage('teamMessage', `Error: ${error.message}`, 'error');
+            }
+        }
+
+        // ======= TOURNAMENT MANAGEMENT FUNCTIONS =======
+
+        // Fetch all tournaments from the backend and display them
+        async function loadTournaments() {
+            try {
+                const tournaments = await apiCall(`${API_BASE}/tournaments`);
+                displayTournaments(tournaments);
+            } catch (error) {
+                document.getElementById('tournamentsList').innerHTML = `<div class="error">Error loading tournaments: ${error.message}</div>`;
+            }
+        }
+
+        // Create HTML cards for each tournament and display them in a grid
+        function displayTournaments(tournaments) {
+            const container = document.getElementById('tournamentsList');
+            
+            if (tournaments.length === 0) {
+                container.innerHTML = '<div class="loading">No tournaments found. Create your first tournament!</div>';
+                return;
+            }
+            
+            // Generate HTML for each tournament card with team badges and status
+            container.innerHTML = tournaments.map(tournament => `
+                <div class="item-card">
+                    <h3>${tournament.name}</h3>
+                    <p><strong>Location:</strong> ${tournament.location}</p>
+                    <p><strong>Duration:</strong> ${new Date(tournament.startDate).toLocaleDateString()} - ${new Date(tournament.endDate).toLocaleDateString()}</p>
+                    <p><strong>Teams:</strong> ${tournament.teams.length}/${tournament.maxTeams} registered</p>
+                    <p><strong>Status:</strong> <span class="status-badge status-${tournament.status}">${tournament.status}</span></p>
+                    <div class="tournament-teams">
+                        ${tournament.teams.map(team => 
+                            `<span class="team-badge">${team.name}</span>`
+                        ).join('')}
+                    </div>
+                    <div class="item-actions">
+                        <button class="btn-danger" onclick="deleteTournament('${tournament._id}', '${tournament.name}')">Delete Tournament</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Handle form submission when creating a new tournament
+        document.getElementById('tournamentForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // Get selected teams from the multi-select dropdown
+            const selectedTeams = Array.from(document.getElementById('tournamentTeams').selectedOptions)
+                .map(option => option.value);
+            
+            // Collect form data
+            const tournamentData = {
+                name: document.getElementById('tournamentName').value,
+                location: document.getElementById('tournamentLocation').value,
+                startDate: document.getElementById('tournamentStartDate').value,
+                endDate: document.getElementById('tournamentEndDate').value,
+                maxTeams: parseInt(document.getElementById('tournamentMaxTeams').value),
+                teams: selectedTeams
+            };
+            
+            try {
+                // Send tournament data to backend
+                await apiCall(`${API_BASE}/tournaments`, {
+                    method: 'POST',
+                    body: JSON.stringify(tournamentData)
+                });
+                
+                showMessage('tournamentMessage', 'Tournament created successfully!');
+                resetTournamentForm();
+                loadTournaments(); // Refresh the tournament list
+            } catch (error) {
+                showMessage('tournamentMessage', `Error: ${error.message}`, 'error');
+            }
+        });
+
+        // Clear the tournament form fields
+        function resetTournamentForm() {
+            document.getElementById('tournamentForm').reset();
+        }
+
+        // Delete a tournament after user confirmation
+        async function deleteTournament(tournamentId, tournamentName) {
+            if (!confirm(`Are you sure you want to delete ${tournamentName}?`)) {
+                return;
+            }
+            
+            try {
+                await apiCall(`${API_BASE}/tournaments/${tournamentId}`, {
+                    method: 'DELETE'
+                });
+                
+                showMessage('tournamentMessage', 'Tournament deleted successfully!');
+                loadTournaments(); // Refresh the tournament list
+            } catch (error) {
+                showMessage('tournamentMessage', `Error: ${error.message}`, 'error');
+            }
+        }
+
+        // Close modals when user clicks outside of them
+        window.onclick = function(event) {
+            const playerModal = document.getElementById('editPlayerModal');
+            const teamModal = document.getElementById('editTeamModal');
+            if (event.target === playerModal) {
+                closeEditPlayerModal();
+            }
+            if (event.target === teamModal) {
+                closeEditTeamModal();
+            }
+        }
+
+        // Initialize the application when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            loadPlayers(); // Load player data first
+            loadPlayersForTeamForm(); // Populate team form dropdowns
+        });
+    </script>
+</body>
+</html>

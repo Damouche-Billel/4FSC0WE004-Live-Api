@@ -1,0 +1,21 @@
+{
+  "name": "fennec-fc-management",
+  "version": "1.0.0",
+  "description": "Football team management system for Fennec FC",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
+  "keywords": ["football", "team management", "api", "nodejs", "mongodb"],
+  "author": "Student",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "mongoose": "^8.0.3",
+    "cors": "^2.8.5"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  }
+}

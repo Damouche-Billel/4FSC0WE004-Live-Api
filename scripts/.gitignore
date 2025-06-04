@@ -1,0 +1,79 @@
+# Node.js Dependencies - Don't track installed packages and debug files
+node_modules/              # All installed npm packages (can be reinstalled with npm install)
+npm-debug.log*            # Debug logs created when npm commands fail
+yarn-debug.log*           # Debug logs from Yarn package manager
+yarn-error.log*           # Error logs from Yarn package manager
+
+# Runtime Process Data - Temporary files created when app is running
+pids                      # Directory containing process ID files
+*.pid                     # Individual process ID files
+*.seed                    # Random seed files used by some applications
+*.pid.lock                # Lock files to prevent multiple processes
+
+# Code Coverage Tools - Files generated when testing code coverage
+lib-cov                   # Directory for instrumented code coverage libraries
+coverage/                 # Directory containing code coverage reports
+*.lcov                    # Coverage data in LCOV format
+.nyc_output              # Output directory for NYC coverage tool
+
+# Build Tools - Temporary files from various build systems
+.grunt                    # Grunt task runner temporary files
+bower_components          # Bower package manager dependencies
+.lock-wscript            # Node-waf build configuration lock file
+build/Release            # Compiled binary add-ons and native modules
+jspm_packages/           # SystemJS package manager dependencies
+
+# TypeScript - Type definition files for older TypeScript versions
+typings/                  # Type definitions directory (replaced by @types)
+
+# Package Manager Cache - Local cache directories to speed up installs
+.npm                      # NPM's local cache directory
+.eslintcache             # ESLint's cache to speed up linting
+
+# Development History and Temporary Files
+.node_repl_history       # Node.js REPL command history
+*.tgz                    # Compressed package files from 'npm pack'
+.yarn-integrity          # Yarn integrity check file
+
+# Environment Variables - Sensitive configuration that shouldn't be shared
+.env                     # Main environment variables file
+.env.test               # Environment variables for testing
+.env.production         # Environment variables for production
+.env.local              # Local environment overrides
+
+# Build Tool Cache and Output Directories
+.cache                   # General cache directory used by various tools
+.parcel-cache           # Parcel bundler cache directory
+.next                   # Next.js build output directory
+.nuxt                   # Nuxt.js build output directory
+.vuepress/dist          # VuePress static site generator output
+
+# Serverless and Cloud Deployment
+.serverless             # Serverless framework deployment files
+.fusebox/               # FuseBox bundler cache
+.dynamodb/              # Local DynamoDB files for testing
+.tern-port              # TernJS port configuration file
+
+# Operating System Generated Files - Automatically created by different OS
+.DS_Store               # macOS folder view settings
+.DS_Store?              # macOS folder view settings (alternative name)
+._*                     # macOS resource forks and metadata
+.Spotlight-V100         # macOS Spotlight search index
+.Trashes                # macOS Trash folder contents
+ehthumbs.db            # Windows thumbnail cache
+Thumbs.db              # Windows thumbnail database
+
+# IDE and Editor Files - Configuration files from development tools
+.vscode/                # Visual Studio Code workspace settings
+.idea/                  # JetBrains IDEs (WebStorm, IntelliJ) project files
+*.swp                   # Vim swap files (temporary editing files)
+*.swo                   # Vim swap files (alternative extension)
+*~                      # Backup files created by various editors
+
+# Application Logs - Debug and error information
+logs                    # Directory containing application log files
+*.log                   # Individual log files
+
+# Database Files - Local database storage that shouldn't be shared
+data/                   # General data directory
+mongodb/                # MongoDB database files directory
