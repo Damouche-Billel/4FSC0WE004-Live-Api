@@ -14,10 +14,7 @@ app.use(express.json());                    // Parse JSON request bodies automat
 app.use(express.static('public'));          // Serve static files from 'public' directory
 
 // MongoDB Database Connection
-mongoose.connect('mongodb://localhost:27017/fennec_fc', {
-  useNewUrlParser: true,                     // Use new URL parser to avoid deprecation warnings
-  useUnifiedTopology: true,                  // Use new connection management engine
-});
+mongoose.connect('mongodb+srv://bdamouche1:Random52%3F@cluster0.ahajwej.mongodb.net/fennec_fc?retryWrites=true&w=majority&appName=Cluster0');
 
 // Database connection event handlers
 const db = mongoose.connection;
